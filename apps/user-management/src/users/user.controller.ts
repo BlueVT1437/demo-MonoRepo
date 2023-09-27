@@ -11,15 +11,14 @@ import {
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
-	
-  // @Get('/search')
-  // getUserByMai(@Query('mail') mail: string) {
-  //   return this.userService.searchUsersByMail(mail);
-  // }
 
   @Get()
-  getUsers(@Query('mail') mail: string) {
-    return this.userService.searchUsersByMail(mail);
+  getUsers(
+    @Query('mail') mail: string,
+    @Query('page') page: number,
+    @Query('limit') limit: number
+  ) {
+    return this.userService.searchUsersByMail(mail, page, limit);
   }
 
   @Get(':id')
@@ -28,7 +27,7 @@ export class UserController {
   }
 
   @Put(':id')
-  update(@Param('id') id: number, @Body() dto: CreateUserDto) {
+  updateUser(@Param('id') id: number, @Body() dto: CreateUserDto) {
     return this.userService.updateUser(dto, id);
   }
 

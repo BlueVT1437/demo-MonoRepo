@@ -17,16 +17,13 @@ export class UserService {
     @InjectRepository(Role) private readonly roleRepository: Repository<Role>
   ) {}
 
-  async getUsers() {
-    return await this.userRepository.find({
+  async getUserById(id: number) {
+    return await this.userRepository.findOne({
+      where: { id },
       relations: {
         role: true,
       },
     });
-  }
-
-  async getUserById(id: number) {
-    return await this.userRepository.findOne({ where: { id } });
   }
 
   async updateUser(user: CreateUserDto, id: number) {
@@ -85,15 +82,26 @@ export class UserService {
     );
   }
 
-  async searchUsersByMail(mail: string): Promise<User[] | undefined> {
+  async searchUsersByMail(
+    mail: string,
+    page: number,
+    limit: number
+  ): Promise<object | undefined> {
+    // get all user
     if (!mail) {
-      return await this.userRepository.find({
+      const [allUsers, total] = await this.userRepository.findAndCount({
         relations: {
           role: true,
         },
+        skip: limit * (page - 1),
+        take: limit,
       });
+
+      return { data: allUsers, total };
     }
-    return await this.userRepository.find({
+
+    //find by mail
+    const [allUsers, total] = await this.userRepository.findAndCount({
       where: {
         email: Like(`%${mail}%`),
       },
@@ -101,5 +109,7 @@ export class UserService {
         role: true,
       },
     });
+
+    return { data: allUsers, total };
   }
 }

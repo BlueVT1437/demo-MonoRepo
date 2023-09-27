@@ -6,6 +6,7 @@ import { TodosController } from './todos.controller';
 import { TodosService } from './todos.service';
 import { PermissionModule } from '../permissions/permission.module';
 import { Permission } from '../permissions/permission.entity';
+import { JwtService } from '@nestjs/jwt';
 
 @Module({
   imports: [
