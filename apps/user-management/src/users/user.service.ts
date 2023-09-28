@@ -86,22 +86,10 @@ export class UserService {
     mail: string,
     page: number,
     limit: number
-  ): Promise<object | undefined> {
-    // get all user
-    if (!mail) {
-      const [allUsers, total] = await this.userRepository.findAndCount({
-        relations: {
-          role: true,
-        },
-        skip: limit * (page - 1),
-        take: limit,
-      });
-
-      return { data: allUsers, total };
-    }
-
-    //find by mail
+  ): Promise<object> {
     const [allUsers, total] = await this.userRepository.findAndCount({
+      skip: limit * (page - 1),
+      take: limit,
       where: {
         email: Like(`%${mail}%`),
       },

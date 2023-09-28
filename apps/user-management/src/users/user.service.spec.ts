@@ -2,9 +2,10 @@ import { Repository } from 'typeorm';
 import { Test, TestingModule } from '@nestjs/testing';
 import { UserService } from './user.service';
 import { User } from '../auth/auth.entity';
-import { CreateUserDto } from 'libs/dtos/user.dto';
+import { CreateUserDto, UpdatePasswordDto } from 'libs/dtos/user.dto';
 import { Role } from '../roles/role.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
+import * as bcrypt from 'bcrypt';
 
 // import { StudentService } from './student.service';
 
@@ -17,11 +18,13 @@ describe('UserService', () => {
       id: 1,
       email: 'test@gmail.com',
       name: 'test',
+      password: bcrypt.hashSync('123', 10),
     })),
     save: jest.fn(),
     update: jest.fn(),
-    findAndCount: jest.fn(),
+    findAndCount: jest.fn(() => [[new User(), new User()], 2]),
   };
+
   let roleRepositoryMock = {
     findOne: jest.fn(() => ({
       id: 1,
@@ -47,6 +50,7 @@ describe('UserService', () => {
     userService = module.get<UserService>(UserService);
     userRepository = module.get<Repository<User>>(getRepositoryToken(User));
     roleRepository = module.get<Repository<Role>>(getRepositoryToken(Role));
+    jest.clearAllMocks();
   });
 
   it('UserService - should be defined', () => {
@@ -103,6 +107,46 @@ describe('UserService', () => {
 
       expect(result).toEqual(messageOutput);
       expect(updateStatus).toBeCalledWith({ id: userId }, { status: isActive });
+    });
+  });
+
+  describe('updatePassword', () => {
+    it('should return a message', async () => {
+      const userId = 1;
+      const updatePasswordDto: UpdatePasswordDto = {
+        password: '123',
+        currentPassword: '123',
+      };
+      const messageOutput = { message: 'Update password successfully' };
+
+      const existedUser = jest.spyOn(userRepositoryMock, 'findOne');
+      const result = await userService.updatePassword(
+        userId,
+        updatePasswordDto
+      );
+
+      expect(existedUser).toBeCalledWith({
+        where: {
+          id: Number(userId),
+        },
+      });
+      expect(result).toEqual(messageOutput);
+    });
+  });
+
+  describe('searchUsersByMail', () => {
+    it('should return a data list and total items', async () => {
+      const mail = 'test@gmail.com';
+      const page = 1;
+      const limit = 10;
+
+      const outputData = { data: [new User(), new User()], total: 2 };
+
+      const getAllUser = jest.spyOn(userRepositoryMock, 'findAndCount');
+      const result = await userService.searchUsersByMail(mail, page, limit);
+
+      expect(result).toEqual(outputData);
+      expect(getAllUser).toBeCalledTimes(1);
     });
   });
 });
