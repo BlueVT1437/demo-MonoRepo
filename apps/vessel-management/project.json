@@ -1,6 +1,6 @@
 {
   "name": "vessel-management",
-  "$schema": "../node_modules/nx/schemas/project-schema.json",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/vessel-management/src",
   "projectType": "application",
   "targets": {
@@ -26,14 +26,14 @@
       "executor": "@nx/js:node",
       "defaultConfiguration": "development",
       "options": {
-        "buildTarget": "apps/vessel-management:build"
+        "buildTarget": "vessel-management:build"
       },
       "configurations": {
         "development": {
-          "buildTarget": "apps/vessel-management:build:development"
+          "buildTarget": "vessel-management:build:development"
         },
         "production": {
-          "buildTarget": "apps/vessel-management:build:production"
+          "buildTarget": "vessel-management:build:production"
         }
       }
     },

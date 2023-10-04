@@ -76,7 +76,7 @@ export class UserService {
     throw new HttpException(
       {
         status: HttpStatus.BAD_REQUEST,
-        error: 'Wrong password!',
+        error: 'Wrong credentials!',
       },
       HttpStatus.BAD_REQUEST
     );

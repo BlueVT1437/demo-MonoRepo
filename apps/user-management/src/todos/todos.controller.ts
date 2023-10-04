@@ -42,13 +42,13 @@ export class TodosController {
   }
 
   @Put(':id')
-  update(@Param('id') id: number, @Body() dto: CreateTodoDto) {
+  updateTodo(@Param('id') id: number, @Body() dto: CreateTodoDto) {
     return this.todosService.update(id, dto);
   }
 
   @Roles('Admin')
   @Delete(':id')
-  delete(@Param('id') id: number) {
+  deleteTodo(@Param('id') id: number) {
     return this.todosService.delete(id);
   }
 }

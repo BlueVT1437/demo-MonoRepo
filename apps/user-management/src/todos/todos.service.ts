@@ -7,18 +7,18 @@ import { CreateTodoDto } from '../../../../libs/dtos/todo.dto';
 @Injectable()
 export class TodosService {
   constructor(
-    @InjectRepository(Todo) private readonly todoRepository: Repository<Todo>, // @InjectRepository(Permission) private readonly permissionRepository: Repository<Permission>,
+    @InjectRepository(Todo) private readonly todoRepository: Repository<Todo> // @InjectRepository(Permission) private readonly permissionRepository: Repository<Permission>,
   ) {}
 
   async create(dto: CreateTodoDto) {
-		console.log('dto', dto);
     const todo = await this.todoRepository.create(dto);
-		await this.todoRepository.save(todo)
+    await this.todoRepository.save(todo);
     return { message: 'Created successfully!' };
   }
 
   async getAll() {
-    return await this.todoRepository.find();
+    const [todoList, totalTodo] = await this.todoRepository.findAndCount();
+    return { data: todoList, total: totalTodo };
   }
 
   async getDetail(id: number) {

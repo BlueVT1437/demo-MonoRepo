@@ -21,14 +21,14 @@ export class AuthService {
     @InjectRepository(User) private readonly userRepository: Repository<User>,
     @InjectRepository(Role) private readonly roleRepository: Repository<Role>,
     private readonly producerService: ProducerService,
-    private jwtService: JwtService,
+    private jwtService: JwtService
   ) {}
 
   async validateUser(email: string, pass: string): Promise<any> {
     const user = await this.userRepository.findOne(email as any);
 
     if (user && user.password === pass) {
-      const { password, ...result } = user;
+      const { ...result } = user;
       return result;
     }
     return null;
@@ -102,7 +102,7 @@ export class AuthService {
         HttpStatus.UNAUTHORIZED,
         {
           cause: err,
-        },
+        }
       );
     }
   }
@@ -130,13 +130,17 @@ export class AuthService {
             id: 2,
           },
         ],
-				status: true
+        status: true,
       });
 
       await this.userRepository.save(newUser);
     }
 
-    const payload = { sub: userInfo.name, username: userInfo.email, role: [{ id: 1, role: 'User', permissions: [] }] };
+    const payload = {
+      sub: userInfo.name,
+      username: userInfo.email,
+      role: [{ id: 1, role: 'User', permissions: [] }],
+    };
     const access_token = await this.jwtService.signAsync(payload);
 
     return { access_token };

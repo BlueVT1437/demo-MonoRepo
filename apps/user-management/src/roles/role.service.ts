@@ -14,17 +14,17 @@ export class RoleService {
   ) {}
 
   async createRole(dto: CreateRoleDto) {
-    const existedRole = await this.roleRepository.find({
+    const existedRole = await this.roleRepository.findOne({
       where: {
         role: dto.role,
       },
     });
 
-    if (existedRole.length === 0) {
+    if (!existedRole) {
       const todo = await this.roleRepository.create(dto);
 
       await this.roleRepository.save(todo);
-      return { message: 'Created successfully' };
+      return { message: 'Created successfully!' };
     } else {
       throw new HttpException('Role is existed', HttpStatus.NOT_ACCEPTABLE);
     }
