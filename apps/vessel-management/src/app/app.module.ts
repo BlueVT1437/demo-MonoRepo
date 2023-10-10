@@ -21,10 +21,10 @@ config();
         password: process.env.DB_PASSWORD || '1234',
         database: 'student',
         entities: [VesselEntity],
-        synchronize: true, // should use false
+        synchronize: false, // should use false
       }),
-      inject: [ConfigService],
     }),
+		TypeOrmModule.forFeature([VesselEntity])
   ],
   controllers: [AppController],
   providers: [AppService],

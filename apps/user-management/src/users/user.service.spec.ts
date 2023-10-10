@@ -11,8 +11,6 @@ import * as bcrypt from 'bcrypt';
 
 describe('UserService', () => {
   let userService: UserService;
-  let userRepository: Repository<User>;
-  let roleRepository: Repository<Role>;
   let userRepositoryMock = {
     findOne: jest.fn(() => ({
       id: 1,
@@ -42,14 +40,12 @@ describe('UserService', () => {
         },
         {
           provide: getRepositoryToken(Role),
-          useClass: Repository,
+          useValue: roleRepositoryMock,
         },
       ],
     }).compile();
 
     userService = module.get<UserService>(UserService);
-    userRepository = module.get<Repository<User>>(getRepositoryToken(User));
-    roleRepository = module.get<Repository<Role>>(getRepositoryToken(Role));
     jest.clearAllMocks();
   });
 

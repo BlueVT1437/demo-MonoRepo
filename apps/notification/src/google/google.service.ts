@@ -6,7 +6,5 @@ export class GoogleService {
     if (!req.user) {
       return 'No user from google';
     }
-
-    console.log('req.user', req.user);
   }
 }

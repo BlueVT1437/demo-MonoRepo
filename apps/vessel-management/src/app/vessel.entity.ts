@@ -6,7 +6,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-@Entity({ name: 'MDM_VSL_CNTR' })
+@Entity({ name: 'mdm_vsl_cntr' })
 export class VesselEntity {
   @PrimaryColumn({ name: 'VSL_CD' })
   vslCd: string;

@@ -6,11 +6,14 @@ import {
   AddPermissionDto,
   CreateRoleDto,
 } from '../../../../libs/dtos/roles.dto';
+import { Permission } from '../permissions/permission.entity';
 
 @Injectable()
 export class RoleService {
   constructor(
-    @InjectRepository(Role) private readonly roleRepository: Repository<Role>
+    @InjectRepository(Role) private readonly roleRepository: Repository<Role>,
+    @InjectRepository(Permission)
+    private readonly permissionRepository: Repository<Permission>
   ) {}
 
   async createRole(dto: CreateRoleDto) {
@@ -44,17 +47,26 @@ export class RoleService {
   }
 
   async addPermission(bodyDto: AddPermissionDto) {
-    // const permission = this.permissionService.findPermissionsByIds(
-    //   bodyDto.idPermission
-    // );
+    const existedRole = await this.roleRepository.findOne({
+      where: {
+        id: Number(bodyDto.idRole),
+      },
+    });
 
-    console.log('bodyDto', bodyDto);
+    const listPermissionSelected = [];
+    for (let i = 0; i < bodyDto.idPermission.length; i++) {
+      const permissionSelected = await this.permissionRepository.findOne({
+        where: {
+          id: bodyDto.idPermission[i],
+        },
+      });
 
-    // await this.roleRepository.update(
-    //   { id: Number(bodyDto.idRole) },
-    //   { permissions: bodyDto.idPermission as any }
-    // );
+      listPermissionSelected.push(permissionSelected);
+    }
 
-    // return { message: 'Inactive account successfully' };
+    const newRole = { ...existedRole, permissions: listPermissionSelected };
+    await this.roleRepository.save(newRole);
+
+    return { message: 'Update permissions successfully' };
   }
 }

@@ -3,6 +3,8 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { RoleService } from './role.service';
 import { Role } from './role.entity';
 import { CreateRoleDto } from 'libs/dtos/roles.dto';
+import { Permission } from '../permissions/permission.entity';
+import { PermissionService } from '../permissions/permission.service';
 
 describe('UserService', () => {
   let roleService: RoleService;
@@ -13,14 +15,20 @@ describe('UserService', () => {
     find: jest.fn(() => [new Role(), new Role()]),
     remove: jest.fn(),
   };
+  let permissionRepositoryMock = {};
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         RoleService,
+        PermissionService,
         {
           provide: getRepositoryToken(Role),
           useValue: roleRepositoryMock,
+        },
+        {
+          provide: getRepositoryToken(Permission),
+          useValue: permissionRepositoryMock,
         },
       ],
     }).compile();
@@ -62,9 +70,9 @@ describe('UserService', () => {
 
   describe('getPermissionByRole', () => {
     it('should return permission list', async () => {
-      const roleId = 1
+      const roleId = 1;
 
-      const result = await roleService.getPermissionByRole(roleId)
+      const result = await roleService.getPermissionByRole(roleId);
 
       expect(result).toBe(undefined);
     });

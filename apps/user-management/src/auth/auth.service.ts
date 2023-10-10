@@ -69,7 +69,8 @@ export class AuthService {
       };
       const newUser = this.userRepository.create(userInfo);
 
-      return await this.userRepository.save(newUser);
+      await this.userRepository.save(newUser);
+      return { message: 'Created user successfully' };
     }
   }
 

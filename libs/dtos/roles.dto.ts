@@ -9,5 +9,5 @@ export class AddPermissionDto {
   @IsNotEmpty({ message: 'This field must be input' })
   idRole: string;
   @IsNotEmpty({ message: 'This field must be input' })
-  idPermission: string[];
+  idPermission: number[];
 }
