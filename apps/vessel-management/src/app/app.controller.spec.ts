@@ -2,21 +2,43 @@ import { Test, TestingModule } from '@nestjs/testing';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { VesselEntity } from './vessel.entity';
 
 describe('AppController', () => {
-  let app: TestingModule;
+  let appServiceMock = {
+    getDataVessel: jest.fn(),
+  };
+  let appController: AppController;
 
-  beforeAll(async () => {
-    app = await Test.createTestingModule({
+  beforeEach(async () => {
+    const module: TestingModule = await Test.createTestingModule({
       controllers: [AppController],
-      providers: [AppService],
+      providers: [
+        {
+          provide: AppService,
+          useValue: appServiceMock,
+        },
+      ],
     }).compile();
+
+    appController = module.get<AppController>(AppController);
   });
 
-  describe('getData', () => {
-    it('should return "Hello API"', () => {
-      const appController = app.get<AppController>(AppController);
-      expect(appController.getData()).toEqual({ message: 'Hello API' });
+  it('should be defined', () => {
+    expect(AppController).toBeDefined();
+  });
+
+  describe('getDataVessel', () => {
+    it('should return a object contain list data and total', async () => {
+      const outputData = {
+        data: [new VesselEntity(), new VesselEntity()],
+        total: 2,
+      };
+
+      appServiceMock.getDataVessel = jest.fn().mockResolvedValue(outputData);
+      const result = await appController.getDataVessel(1, 10, '');
+
+      expect(result).toStrictEqual(outputData);
     });
   });
 });
