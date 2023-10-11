@@ -10,9 +10,7 @@ export class MailService {
 
   async sendUserConfirmation(message: string) {
 		const parseMessage = JSON.parse(message);
-		console.log('parseMessage', parseMessage);
     const { token, name, email } = parseMessage;
-
     const url = `example.com/auth/confirm?token=${token}`;
 
     await this.mailerService.sendMail({

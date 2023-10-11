@@ -1,19 +1,36 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { MailService } from './mail.service';
+import { MailerModule, MailerService } from '@nestjs-modules/mailer';
 
 describe('MailService', () => {
-  let service: MailService;
+  let mailService: MailService;
+  let mailerServiceMock = {
+    sendMail: jest.fn(),
+  };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [MailService],
-			imports: [MailService]
+      providers: [
+        MailService,
+        {
+          provide: MailerService,
+          useValue: mailerServiceMock,
+        },
+      ],
     }).compile();
 
-    service = module.get<MailService>(MailService);
+    mailService = module.get<MailService>(MailService);
   });
 
   it('should be defined', () => {
-    expect(service).toBeDefined();
+    expect(mailService).toBeDefined();
+  });
+
+  describe('sendUserConfirmation', () => {
+    it('should send mail to customer mail', async () => {
+      const callSendMail = jest.spyOn(mailerServiceMock, 'sendMail');
+
+      expect(callSendMail).toBeCalledTimes(0);
+    });
   });
 });
